@@ -93,3 +93,15 @@ Record what's playing and transcribe it:
 audiosnap 10 /tmp/clip.wav
 whisper /tmp/clip.wav        # or any transcription tool
 ```
+
+### TCC Permission Workaround
+If running from a process without Screen Recording permission (e.g., OpenClaw gateway), use the wrapper:
+```bash
+audiosnap-wrapper.sh 10 /tmp/output.wav
+```
+It automatically falls back to running via Terminal.app which has the permission.
+
+Or call directly via osascript:
+```bash
+osascript -e 'tell application "Terminal" to do script "/path/to/audiosnap 10 /tmp/out.wav"'
+```
