@@ -130,21 +130,24 @@ def download_xiaoyuzhou_rss(podcast_id: str, output: str) -> str:
     req = urllib.request.Request(rss_url, headers={
         "User-Agent": "Mozilla/5.0"
     })
-    resp = urllib.request.urlopen(req)
-    tree = ET.parse(resp)
-    root = tree.getroot()
+    try:
+        resp = urllib.request.urlopen(req)
+        tree = ET.parse(resp)
+        root = tree.getroot()
 
-    # Find first enclosure
-    for item in root.iter("item"):
-        enclosure = item.find("enclosure")
-        if enclosure is not None:
-            audio_url = enclosure.get("url")
-            title = item.findtext("title", "episode")
-            print(f"📻 Latest: {title}", file=sys.stderr)
-            return download_direct(audio_url, output)
+        for item in root.iter("item"):
+            enclosure = item.find("enclosure")
+            if enclosure is not None:
+                audio_url = enclosure.get("url")
+                title = item.findtext("title", "episode")
+                print(f"📻 Latest: {title}", file=sys.stderr)
+                return download_direct(audio_url, output)
 
-    print("❌ No episodes found in RSS", file=sys.stderr)
-    sys.exit(1)
+        print("❌ No episodes found in RSS", file=sys.stderr)
+        sys.exit(1)
+    except urllib.error.HTTPError:
+        print("⚠️  RSS requires auth, skipping", file=sys.stderr)
+        return download_ytdlp(f"https://www.xiaoyuzhoufm.com/podcast/{podcast_id}", output)
 
 
 def transcribe(audio_path: str, method: str = "auto") -> str:
