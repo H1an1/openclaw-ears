@@ -12,7 +12,7 @@ SCOPES = (
     "user-read-playback-state user-read-currently-playing user-modify-playback-state "
     "playlist-read-private playlist-read-collaborative playlist-modify-public playlist-modify-private "
     "user-follow-read user-follow-modify user-top-read user-read-recently-played "
-    "user-library-read user-library-modify"
+    "user-library-read user-library-modify user-read-private user-read-email"
 )
 CONFIG_DIR = os.path.expanduser("~/.config/openclaw-spotify")
 TOKEN_FILE = os.path.join(CONFIG_DIR, "token.json")
