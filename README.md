@@ -41,3 +41,42 @@ Control Spotify playback, browse your music library, and manage playlists — al
 ## License
 
 MIT
+
+---
+
+## 🎤 audiosnap — System Audio Capture
+
+Capture system audio on macOS using Apple's native ScreenCaptureKit. No virtual audio drivers (BlackHole, Soundflower) needed.
+
+### Why?
+
+Virtual audio drivers break on every major macOS update. ScreenCaptureKit is Apple's official API — it just works.
+
+### Build & Install
+
+```bash
+cd audiosnap
+swift build -c release
+ln -s $(pwd)/.build/release/audiosnap /usr/local/bin/audiosnap
+```
+
+### Usage
+
+```bash
+audiosnap                           # Record 5s → audiosnap-output.wav
+audiosnap 10 output.wav             # Record 10s to file
+audiosnap 30 meeting.wav --exclude-self  # Exclude own audio
+audiosnap 5 out.wav --sample-rate 44100 --channels 1
+```
+
+### Requirements
+
+- macOS 13 (Ventura) or later
+- Screen Recording permission (prompted on first run)
+
+### Use Cases
+
+- 🤖 AI agents listening to what's playing
+- 🎙️ Meeting/podcast recording
+- 📝 Audio transcription
+- 🎵 Music identification

@@ -1,6 +1,6 @@
 ---
 name: spotify
-description: Control Spotify playback, browse music library, and manage playlists via the Spotify Web API. Use when the user asks to play music, check what's playing, see top tracks/artists, search songs, create playlists, or access their Spotify listening history.
+description: Control Spotify playback, browse music library, and manage playlists via the Spotify Web API. Includes audiosnap for capturing system audio on macOS via ScreenCaptureKit (no virtual drivers needed). Use when the user asks to play music, check what's playing, search songs, create playlists, access listening history, or record/listen to system audio.
 ---
 
 # Spotify
@@ -67,3 +67,29 @@ spotify.py raw PUT /me/player/volume '{"volume_percent": 50}'
 - If API returns 401, the script auto-refreshes the token.
 - The `play` command requires an active Spotify device (phone, desktop app, or web player).
 - `top-tracks`/`top-artists` time ranges: `short_term` (~4 weeks), `medium_term` (~6 months), `long_term` (all time).
+
+## System Audio Capture (audiosnap)
+
+Capture system audio on macOS using ScreenCaptureKit. No BlackHole or virtual audio drivers needed.
+
+### Build
+```bash
+cd audiosnap && swift build -c release
+ln -s $(pwd)/.build/release/audiosnap /usr/local/bin/audiosnap
+```
+
+### Usage
+```bash
+audiosnap                    # Record 5s → audiosnap-output.wav
+audiosnap 10 output.wav      # Record 10s
+audiosnap 5 out.wav --exclude-self
+```
+
+Requires macOS 13+ and Screen Recording permission.
+
+### Use with Spotify
+Record what's playing and transcribe it:
+```bash
+audiosnap 10 /tmp/clip.wav
+whisper /tmp/clip.wav        # or any transcription tool
+```
