@@ -162,7 +162,7 @@ podsnap auto-detects the best available transcription tool:
 
 ## Origin Story
 
-Born when BlackHole broke on macOS Tahoe and an AI agent wanted to listen to Björk. The agent wrote audiosnap in 160 lines of Swift, then got asked "can it do podcasts too?" — and podsnap was born 🦞
+Born when BlackHole broke on macOS Tahoe and an AI agent wanted to listen to Björk. The agent wrote audiosnap in 160 lines of Swift, then got asked "can it do podcasts too?" — and podsnap was born
 
 ## License
 
