@@ -141,6 +141,32 @@ if __name__ == "__main__":
                 artists = "/".join(a["name"] for a in t.get("artists", []) if a.get("name"))
                 print(f"  {i}. {t.get('title','?')} — {artists}")
 
+    elif cmd == "play":
+        if len(sys.argv) < 3:
+            print("Usage: ytmusic.py play <video_id|query>")
+            sys.exit(1)
+        import subprocess, webbrowser
+
+        arg = sys.argv[2]
+        # If not a video ID, search first
+        if len(arg) != 11 or " " in arg:
+            query = " ".join(sys.argv[2:])
+            yt = get_yt()
+            results = yt.search(query, filter="songs", limit=1)
+            if not results:
+                print(f"No results: {query}")
+                sys.exit(1)
+            vid = results[0]["videoId"]
+            title = results[0].get("title", "?")
+            artists = "/".join(a["name"] for a in results[0].get("artists", []) if a.get("name"))
+            print(f"Playing: {title} — {artists}")
+        else:
+            vid = arg
+
+        url = f"https://music.youtube.com/watch?v={vid}"
+        webbrowser.open(url)
+        print(f"Opened: {url}")
+
     elif cmd == "url":
         if len(sys.argv) < 3:
             print("Usage: ytmusic.py url <video_id>")
@@ -213,5 +239,6 @@ Browse:
 
 Audio:
   url <video_id>            Get YouTube/YTMusic URLs
+  play <id|query>           Open in browser and play
   download <id|query> [dir] Download audio (requires yt-dlp)
 """)

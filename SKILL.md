@@ -175,10 +175,12 @@ ytmusic.py history                   # Play history
 #### Audio
 ```bash
 ytmusic.py url <video_id>            # Get YouTube/YTMusic URLs
+ytmusic.py play <id|query>           # Open in browser and play
 ytmusic.py download <id|query> [dir] # Download audio (requires yt-dlp)
 ```
 
 ### Notes
 - Search works without login. Playlists/likes/history require auth.
+- `play` opens YouTube Music in the default browser.
 - Download uses `yt-dlp` — install separately (`brew install yt-dlp`).
-- YouTube Music has no playback control API for remote devices.
+- No remote playback control API — `play` only opens browser on local machine.
