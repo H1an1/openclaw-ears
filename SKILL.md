@@ -226,3 +226,53 @@ applemusic.py local-playlists        # List local playlists
 - Music.app control requires macOS Automation permission.
 - `preview` plays a 30-second preview clip via `afplay`.
 - No access to personal library (liked songs, playlists) without MusicKit ($99/yr Apple Developer).
+
+---
+
+## QQ 音乐 — `scripts/qqmusic.py`
+
+### Setup
+
+No setup needed for search. Login required for playlists and some downloads.
+
+Login via browser cookie (paste):
+```bash
+python3 scripts/qqmusic.py login
+```
+
+Login via QR code (QQ app scan):
+```bash
+python3 scripts/qqmusic.py login-qr
+```
+
+Cookie stored in `~/.config/openclaw-ears/qqmusic-cookie.txt`.
+
+### Commands
+
+#### Auth
+```bash
+qqmusic.py login                     # Login via browser cookie
+qqmusic.py login-qr                  # Login via QQ QR code
+qqmusic.py status                    # Check login status
+```
+
+#### Browse
+```bash
+qqmusic.py search <query>            # Search songs
+qqmusic.py search-albums <query>     # Search albums
+qqmusic.py playlists                 # Your playlists (needs login)
+qqmusic.py playlist <id>             # Tracks in a playlist
+```
+
+#### Audio
+```bash
+qqmusic.py url <songmid>             # Get audio URL
+qqmusic.py play <mid|query>          # Open in browser
+qqmusic.py download <mid|query> [dir] # Download audio
+```
+
+### Notes
+- Search works without login.
+- Login uses QQ/WeChat cookie from browser — no official OAuth.
+- VIP tracks may not be downloadable without VIP subscription.
+- No playback control API.
