@@ -1,13 +1,15 @@
 ---
-name: spotify
-description: Control Spotify playback, browse music library, and manage playlists via the Spotify Web API. Includes audiosnap for capturing system audio on macOS via ScreenCaptureKit (no virtual drivers needed). Use when the user asks to play music, check what's playing, search songs, create playlists, access listening history, or record/listen to system audio.
+name: ears
+description: "Music toolkit: Spotify Web API + Netease Cloud Music. Control playback, browse library, manage playlists, download tracks. Use when the user asks about music, playing songs, checking listening history, downloading audio, or managing playlists on either platform."
 ---
 
-# Spotify
+# Ears 🎵
 
-Control Spotify via the Web API using `scripts/spotify.py`.
+Music toolkit for OpenClaw — Spotify + 网易云音乐.
 
-## Setup (one-time)
+## Spotify — `scripts/spotify.py`
+
+### Setup (one-time)
 
 1. User creates a Spotify app at https://developer.spotify.com/dashboard
    - Set redirect URI to `http://127.0.0.1:8989/login`
@@ -23,9 +25,9 @@ Control Spotify via the Web API using `scripts/spotify.py`.
 
 Config stored in `~/.config/openclaw-spotify/`. Token auto-refreshes.
 
-## Commands
+### Commands
 
-### Info
+#### Info
 ```bash
 spotify.py now                       # Currently playing
 spotify.py top-tracks [range] [n]    # Top tracks (short_term|medium_term|long_term)
@@ -39,7 +41,7 @@ spotify.py search <query>            # Search tracks/artists
 spotify.py devices                   # Available playback devices
 ```
 
-### Playback Control
+#### Playback Control
 ```bash
 spotify.py play                      # Resume
 spotify.py play <query>              # Search and play first match
@@ -49,59 +51,83 @@ spotify.py next
 spotify.py prev
 ```
 
-### Playlist Management
+#### Playlist Management
 ```bash
 spotify.py create-playlist <name>
 spotify.py add-to-playlist <playlist_id> <track_uri> [...]
 ```
 
-### Raw API
+#### Raw API
 ```bash
 spotify.py raw GET /me/player
 spotify.py raw PUT /me/player/volume '{"volume_percent": 50}'
 ```
 
-## Notes
-
-- Run `auth` in background mode to keep the callback server alive while user authorizes.
+### Notes
 - If API returns 401, the script auto-refreshes the token.
-- The `play` command requires an active Spotify device (phone, desktop app, or web player).
-- `top-tracks`/`top-artists` time ranges: `short_term` (~4 weeks), `medium_term` (~6 months), `long_term` (all time).
+- `play` requires an active Spotify device.
+- Time ranges: `short_term` (~4 weeks), `medium_term` (~6 months), `long_term` (all time).
 
-## System Audio Capture (audiosnap)
+---
 
-Capture system audio on macOS using ScreenCaptureKit. No BlackHole or virtual audio drivers needed.
+## 网易云音乐 — `scripts/netease.py`
 
-### Build
+### Setup (one-time)
+
+Dependencies:
 ```bash
-cd audiosnap && swift build -c release
-ln -s $(pwd)/.build/release/audiosnap /usr/local/bin/audiosnap
+pip3 install pyncm
+brew install qrencode  # optional, for terminal QR codes
 ```
 
-### Usage
+Login via QR code (recommended):
 ```bash
-audiosnap                    # Record 5s → audiosnap-output.wav
-audiosnap 10 output.wav      # Record 10s
-audiosnap 5 out.wav --exclude-self
+python3 scripts/netease.py login-qr
+```
+- Generates a QR code image, user scans with 网易云 app
+- For Discord/remote: save QR as PNG with `qrencode -o qr.png -s 10 <URL>` and send the image
+
+Login via SMS:
+```bash
+python3 scripts/netease.py login <phone> [country_code]
 ```
 
-Requires macOS 13+ and Screen Recording permission.
+Session stored in `~/.config/openclaw-ears/netease-session.json`.
 
-### Use with Spotify
-Record what's playing and transcribe it:
+### Commands
+
+#### Auth
 ```bash
-audiosnap 10 /tmp/clip.wav
-whisper /tmp/clip.wav        # or any transcription tool
+netease.py login <phone> [country]   # Login via SMS (default country: 86)
+netease.py login-qr                  # Login via QR code scan
+netease.py status                    # Check login status
 ```
 
-### TCC Permission Workaround
-If running from a process without Screen Recording permission (e.g., OpenClaw gateway), use the wrapper:
+#### Browse
 ```bash
-audiosnap-wrapper.sh 10 /tmp/output.wav
+netease.py search <query>            # Search songs
+netease.py playlists                 # Your playlists
+netease.py playlist <id>             # Tracks in a playlist
+netease.py recent                    # Recently played
+netease.py likes                     # Your liked songs
 ```
-It automatically falls back to running via Terminal.app which has the permission.
 
-Or call directly via osascript:
+#### Audio
 ```bash
-osascript -e 'tell application "Terminal" to do script "/path/to/audiosnap 10 /tmp/out.wav"'
+netease.py url <track_id> [bitrate]  # Get audio URL (default 320kbps)
+netease.py download <id|query> [dir] # Download a single track
+netease.py download-playlist <id> [dir] [--limit N]  # Download playlist
 ```
+
+#### Playback (macOS desktop app only)
+```bash
+netease.py play-mac toggle           # Play/pause
+netease.py play-mac next             # Next track
+netease.py play-mac prev             # Previous track
+```
+
+### Notes
+- QR login sessions expire; re-login when needed.
+- Audio download requires login. Some tracks may be VIP-only or region-locked.
+- Playback control only works on macOS with NeteaseMusic.app installed (no remote control).
+- Unlike Spotify, 网易云 has no remote playback protocol — phone playback cannot be controlled.
