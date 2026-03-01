@@ -184,3 +184,45 @@ ytmusic.py download <id|query> [dir] # Download audio (requires yt-dlp)
 - `play` opens YouTube Music in the default browser.
 - Download uses `yt-dlp` — install separately (`brew install yt-dlp`).
 - No remote playback control API — `play` only opens browser on local machine.
+
+---
+
+## Apple Music — `scripts/applemusic.py`
+
+### Setup
+
+No setup needed for search. Music.app control requires macOS Automation permission:
+- System Settings → Privacy & Security → Automation → enable Music.app for Terminal
+
+### Commands
+
+#### Search (no auth, uses iTunes Search API)
+```bash
+applemusic.py search <query>         # Search songs
+applemusic.py search-albums <query>  # Search albums
+applemusic.py artist <name>          # Artist info + top songs
+applemusic.py album <album_id>       # Album tracks
+applemusic.py lookup <track_id>      # Track details
+```
+
+#### Play
+```bash
+applemusic.py play <id|query>        # Open in Music.app / browser
+applemusic.py preview <id|query>     # Play 30s preview locally (afplay)
+```
+
+#### Music.app Control (macOS only)
+```bash
+applemusic.py now                    # Currently playing
+applemusic.py pause                  # Pause
+applemusic.py resume                 # Resume
+applemusic.py next                   # Next track
+applemusic.py prev                   # Previous track
+applemusic.py local-playlists        # List local playlists
+```
+
+### Notes
+- Search uses the free iTunes Search API — no Apple Developer account needed.
+- Music.app control requires macOS Automation permission.
+- `preview` plays a 30-second preview clip via `afplay`.
+- No access to personal library (liked songs, playlists) without MusicKit ($99/yr Apple Developer).
