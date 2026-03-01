@@ -131,3 +131,54 @@ netease.py play-mac prev             # Previous track
 - Audio download requires login. Some tracks may be VIP-only or region-locked.
 - Playback control only works on macOS with NeteaseMusic.app installed (no remote control).
 - Unlike Spotify, 网易云 has no remote playback protocol — phone playback cannot be controlled.
+
+---
+
+## YouTube Music — `scripts/ytmusic.py`
+
+### Setup (one-time)
+
+Dependencies:
+```bash
+pip3 install ytmusicapi
+brew install yt-dlp  # optional, for audio download
+```
+
+Login (OAuth, opens browser):
+```bash
+python3 scripts/ytmusic.py login
+```
+
+Auth stored in `~/.config/openclaw-ears/ytmusic-auth.json`.
+
+### Commands
+
+#### Auth
+```bash
+ytmusic.py login                     # OAuth login (opens browser)
+ytmusic.py login-headers             # Login via browser headers
+ytmusic.py status                    # Check login status
+```
+
+#### Browse
+```bash
+ytmusic.py search <query>            # Search songs
+ytmusic.py search-albums <query>     # Search albums
+ytmusic.py artist <id|name>          # Artist info + top songs
+ytmusic.py album <browse_id>         # Album tracks
+ytmusic.py playlists                 # Your playlists
+ytmusic.py playlist <id>             # Tracks in a playlist
+ytmusic.py likes                     # Liked songs
+ytmusic.py history                   # Play history
+```
+
+#### Audio
+```bash
+ytmusic.py url <video_id>            # Get YouTube/YTMusic URLs
+ytmusic.py download <id|query> [dir] # Download audio (requires yt-dlp)
+```
+
+### Notes
+- Search works without login. Playlists/likes/history require auth.
+- Download uses `yt-dlp` — install separately (`brew install yt-dlp`).
+- YouTube Music has no playback control API for remote devices.
